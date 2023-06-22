@@ -1,19 +1,36 @@
-import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import React from "react";
+import { loadAddress } from "../store/places.actions";
 
 const PlaceListScreen = () => {
+  const dispatch = useDispatch();
+  const places = useSelector(state => state.places.places);
+
+  useEffect(() => {
+    dispatch(loadAddress());
+  }, []);
+
+  const renderItem = ({ item }) => (
+    <PlaceItem
+      title={item.title}
+      image={item.image}
+
+      address={item.address}
+      onSelect={() => navigation.navigate("Detalle", { placeId: item.id })}
+    />
+  );
   return (
-    <View style={styles.container}>
-      <Text>Direcciones</Text>
-    </View>
+    <FlatList
+      data={places}
+      keyExtractor={item => item.id}
+      renderItem={renderItem}
+    />
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
 });
-
 export default PlaceListScreen;
